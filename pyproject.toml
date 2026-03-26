@@ -1,0 +1,26 @@
+[project]
+name = "django-coupons"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "MR11Robot",email = "taha.youssef.fares@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "django (>=6.0.3,<7.0.0)",
+    "djangorestframework (>=3.17.1,<4.0.0)",
+    "djangorestframework-api-key (>=3.1.0,<4.0.0)",
+    "requests (>=2.33.0,<3.0.0)",
+    "python-dotenv (>=1.2.2,<2.0.0)",
+    "psycopg[binary] (>=3.3.3,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false

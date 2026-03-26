@@ -1,0 +1,24 @@
+{% for store in stores %}
+  <tr>
+    <td class="text-center">{{ store.name }}</td>
+    <td class="text-center">{{ store.updated_at }}</td>
+    <td class="text-center">
+      {% if store.check_status == "active" %}
+        <span class="badge bg-success">Active</span>
+      {% else %}
+        <span class="badge bg-danger">Inactive</span>
+      {% endif %}
+    </td>
+    <td class="text-center">
+      <span>{{ store.coupons.count }}</span>
+    </td>
+    <td class="text-center">
+      <a href="{% url 'coupon_checker:store_coupons' website.slug store.slug %}" class="btn btn-sm btn-primary">View Coupons</a>
+      <a href="{% url 'coupon_checker:store_edit' website.slug store.slug %}" class="btn btn-sm btn-warning">Edit</a>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="5" class="text-center text-muted">No stores found.</td>
+  </tr>
+{% endfor %}

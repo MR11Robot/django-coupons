@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %} Add Company {% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:coupon_checker' %}" class="text-light">Coupon Checker</a></li>
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:company_list' %}" class="text-light">Companies</a></li>
+<li class="breadcrumb-item active" aria-current="page">Add Company</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="container-fluid px-4">
+  <h1 class="fw-bold display-5 mb-4">Add New Company</h1>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} mb-3" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="name" class="form-label fw-bold">Company Name</label>
+          <input type="text" name="name" id="name" class="form-control" placeholder="Enter company name" value="{{ form_data.name|default:'' }}" required>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary me-2"><i class="fas fa-save"></i> Save</button>
+          <a href="{% url 'coupon_checker:company_list' %}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

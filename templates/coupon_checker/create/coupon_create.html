@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Coupon{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-light">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:coupon_checker' %}" class="text-light">Coupon Checker</a></li>
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:websites' %}" class="text-light">Websites</a></li>
+<li class="breadcrumb-item"><a href="#" class="text-light">{{ store.website.name }}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:website_stores' store.website.slug %}" class="text-light">Stores</a></li>
+<li class="breadcrumb-item"><a href="#" class="text-light">{{ store.name }} </a></li>
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:store_coupons' store.website.slug store.slug %}" class="text-light">Coupons</a></li>
+<li class="breadcrumb-item active" aria-current="page">Add Coupon</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Add Coupon for {{ store.name }} ({{ store.website.name }})</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="{{ form.code.id_for_label }}" class="form-label">Coupon Code <span class="text-danger">*</span></label>
+            {{ form.code }}
+            {% if form.code.errors %}
+                <div class="text-danger">{{ form.code.errors }}</div>
+            {% endif %}
+            
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.company.id_for_label }}" class="form-label">Company <span class="text-danger">*</span></label>
+            {{ form.company }}
+            {% if form.company.errors %}
+                <div class="text-danger">{{ form.company.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.website.id_for_label }}" class="form-label">Website</label>
+            {{ form.website }}
+        </div>
+        
+
+        <div class="mb-3">
+            <label class="form-label">Store</label>
+            <input type="text" name="store_display" class="form-control" value="{{ store.name }}" readonly>
+            {{ form.store }}
+            <input type="hidden" name="store" value="{{ store.id }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.check_status.id_for_label }}" class="form-label">Check Status <span class="text-danger">*</span></label>
+            {{ form.check_status }}
+            {% if form.check_status.errors %}
+                <div class="text-danger">{{ form.check_status.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Countries <span class="text-danger">*</span></label>
+            <div class="country-checkbox-container border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                <div class="select-all-container mb-2 pb-2 border-bottom">
+                    <label class="select-all-label">
+                        <input type="checkbox" id="select-all-countries" class="select-all-checkbox">
+                        <span class="ms-2 fw-bold">Select All Countries</span>
+                    </label>
+                </div>
+                {{ form.countries }}
+            </div>
+            {% if form.countries.errors %}
+                <div class="text-danger">{{ form.countries.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Coupon</button>
+    </form>
+</div>
+
+<style>
+    /* Style for country checkboxes */
+    .country-checkbox-container ul {
+        list-style-type: none;
+        padding-left: 0;
+        margin-bottom: 0;
+        column-count: 3;
+    }
+    .country-checkbox-container ul {
+        list-style-type: none;
+        padding-left: 0;
+        margin-bottom: 0;
+        column-count: 3;
+        display: block; /* تأكيد العرض كـ block */
+    }
+    .country-checkbox-container li {
+        margin-bottom: 0.8rem;
+    }
+    
+    
+    .country-checkbox-container label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+    
+    .country-checkbox-container input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        margin-right: 0.7rem;
+        cursor: pointer;
+    }
+    
+    /* Hover effect for better UX - darker color for dark mode */
+    .country-checkbox-container label:hover {
+        background-color: #3a3a3a;
+        border-radius: 4px;
+        padding: 2px 4px;
+        margin: -2px -4px;
+    }
+    
+    /* Select All styles */
+    .select-all-container {
+        margin-bottom: 10px;
+    }
+    
+    .select-all-label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+    
+    .select-all-checkbox {
+        width: 20px;
+        height: 20px;
+        margin-right: 0.7rem;
+        cursor: pointer;
+    }
+    
+    /* Responsive columns */
+    @media (max-width: 992px) {
+        .country-checkbox-container ul {
+            column-count: 2;
+        }
+    }
+    @media (max-width: 576px) {
+        .country-checkbox-container ul {
+            column-count: 1;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // تحويل كود القسيمة إلى حروف كبيرة
+        const couponInput = document.getElementById("{{ form.code.id_for_label }}");
+        if (couponInput) {
+            couponInput.addEventListener("input", function () {
+                this.value = this.value.toUpperCase();
+            });
+        }
+        
+        // التعامل مع وظيفة Select All
+        const selectAllCheckbox = document.getElementById('select-all-countries');
+        
+        // تعريف أكثر مرونة للوصول إلى صناديق الاختيار المطلوبة
+        // استخدام طرق متعددة للعثور على صناديق الاختيار
+        function getCountryCheckboxes() {
+            // محاولة الطريقة الأولى - البحث داخل الـ container
+            let checkboxes = document.querySelectorAll('.country-checkbox-container ul input[type="checkbox"]');
+            
+            // إذا لم يتم العثور على أي صناديق اختيار، جرب البحث بطريقة أخرى
+            if (checkboxes.length === 0) {
+                checkboxes = document.querySelectorAll('#id_countries input[type="checkbox"]');
+            }
+            
+            // إذا لم يتم العثور على أي صناديق اختيار، جرب البحث باستخدام مُعرِّف آخر
+            if (checkboxes.length === 0) {
+                checkboxes = document.querySelectorAll('input[name="countries"]');
+            }
+            
+            // إذا لم يتم العثور على أي صناديق اختيار، جرب البحث على نطاق أوسع
+            if (checkboxes.length === 0) {
+                checkboxes = document.querySelectorAll('.country-checkbox-container input[type="checkbox"]:not(#select-all-countries)');
+            }
+            
+            console.log("Found " + checkboxes.length + " country checkboxes");
+            return checkboxes;
+        }
+        
+        if (selectAllCheckbox) {
+            const countryCheckboxes = getCountryCheckboxes();
+            
+            // تغيير حالة جميع صناديق الاختيار عند النقر على "تحديد الكل"
+            selectAllCheckbox.addEventListener('change', function() {
+                const isChecked = this.checked;
+                console.log("Select All clicked, setting all to: " + isChecked);
+                
+                countryCheckboxes.forEach(checkbox => {
+                    checkbox.checked = isChecked;
+                });
+            });
+            
+            // تحديث حالة "تحديد الكل" عند تغيير صناديق الاختيار الفردية
+            countryCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateSelectAllState();
+                });
+            });
+            
+            // دالة لتحديث حالة "تحديد الكل"
+            function updateSelectAllState() {
+                const allChecked = Array.from(countryCheckboxes).every(cb => cb.checked);
+                const someChecked = Array.from(countryCheckboxes).some(cb => cb.checked);
+                
+                selectAllCheckbox.checked = allChecked;
+                selectAllCheckbox.indeterminate = someChecked && !allChecked;
+            }
+            
+            // التحقق الأولي من الحالة
+            updateSelectAllState();
+        } else {
+            console.error("Select All checkbox not found");
+        }
+    });
+</script>
+
+{% endblock %}

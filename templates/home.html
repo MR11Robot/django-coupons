@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Smart Couponer{% endblock title %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4 text-center fw-bold display-5">Smart Couponer</h1>
+    <p class="text-center text-muted">Your All-in-One Tool Suite</p>
+
+    <div class="row g-4 mt-3 d-flex justify-content-center">
+        
+        <!-- Coupon Checker -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow d-flex flex-column bg-dark text-light">
+                <div class="card-body flex-grow-1 text-center">
+                    <h5 class="card-title fw-bold">Coupon Checker</h5>
+                    <p class="card-text">
+                        Validate, manage and analyze coupon performance across different websites.
+                    </p>
+                </div>
+                <div class="card-footer border-0">
+                    <a href="{% url 'coupon_checker:coupon_checker' %}" class="btn btn-success w-100">Visit Coupon Checker</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Keyword Scrapper -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow d-flex flex-column bg-dark text-light">
+                <div class="card-body flex-grow-1 text-center">
+                    <h5 class="card-title fw-bold">Keyword Scrapper</h5>
+                    <p class="card-text">
+                        Extract and analyze keywords from websites for SEO optimization.
+                    </p>
+                </div>
+                <div class="card-footer border-0">
+                    <a href="{% url 'keyword_scrapper:keyword_scrapper_control' %}" class="btn btn-success w-100">Visit Keyword Scrapper</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Guest Post Link Checker -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow d-flex flex-column bg-dark text-light">
+                <div class="card-body flex-grow-1 text-center">
+                    <h5 class="card-title fw-bold">Guest Post Link Checker</h5>
+                    <p class="card-text">
+                        An automated tool that tracks and verifies backlinks placed in guest post articles to ensure they remain live and contribute to your SEO efforts.
+                    </p>
+                </div>
+                <div class="card-footer border-0">
+                    <a href="{% url 'backlink_checker:control' %}" class="btn btn-success w-100">Visit Guest Post Link Checker</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Store{% endblock title %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:coupon_checker' %}" class="text-light">Coupon Checker</a></li>
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:websites' %}" class="text-light">Websites</a></li>
+<li class="breadcrumb-item"><a href="#" class="text-light">{{ website.name }}</a></li>
+<li class="breadcrumb-item"><a href="{% url "coupon_checker:website_stores" website.slug %}" class="text-light">Stores</a></li>
+<li class="breadcrumb-item active" aria-current="page">Add Store</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Add Store</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="{{ form.name.id_for_label }}" class="form-label">Store Name <span class="text-danger">*</span></label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div class="text-danger">{{ form.name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.website.id_for_label }}" class="form-label">Website <span class="text-danger">*</span></label>
+            {{ form.website }}
+            <input type="hidden" name="website" value="{{ form.website.value }}">  <!-- حقل مخفي لنقل البيانات -->
+            {% if form.website.errors %}
+                <div class="text-danger">{{ form.website.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.url.id_for_label }}" class="form-label">Store URL <span class="text-danger">*</span></label>
+            {{ form.url }}
+            {% if form.url.errors %}
+                <div class="text-danger">{{ form.url.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.check_status.id_for_label }}" class="form-label">Check Status</label>
+            {{ form.check_status }}
+            {% if form.check_status.errors %}
+                <div class="text-danger">{{ form.check_status.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Store</button>
+    </form>
+</div>
+{% endblock %}

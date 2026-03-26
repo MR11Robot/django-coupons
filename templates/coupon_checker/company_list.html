@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %} Companies {% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-light">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:coupon_checker' %}" class="text-light">Coupon Checker</a></li>
+<li class="breadcrumb-item active" aria-current="page">Companies</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="container-fluid px-4">
+  <!-- العنوان والفلاتر -->
+  <div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1 class="fw-bold display-5 m-0">Companies</h1>
+      <a href="{% url 'coupon_checker:company_create' %}" class="btn btn-success"><i class="fas fa-plus"></i> Add Company</a>
+    </div>
+
+    <!-- الفلاتر -->
+    <form method="get" class="row g-3 align-items-end">
+      <div class="col-md-4 col-sm-6">
+        <label for="search" class="form-label fw-bold">Search by Name</label>
+        <div class="input-group">
+          <input type="text" name="search" id="search" class="form-control" placeholder="Enter company name..." value="{{ search_query }}">
+          <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <label for="date_filter" class="form-label fw-bold">Filter by Creation Date</label>
+        <select name="date_filter" id="date_filter" class="form-select">
+          <option value="" {% if not date_filter %}selected{% endif %}>All Time</option>
+          <option value="today" {% if date_filter == 'today' %}selected{% endif %}>Today</option>
+          <option value="yesterday" {% if date_filter == 'yesterday' %}selected{% endif %}>Yesterday</option>
+          <option value="last_7_days" {% if date_filter == 'last_7_days' %}selected{% endif %}>Last 7 Days</option>
+          <option value="last_30_days" {% if date_filter == 'last_30_days' %}selected{% endif %}>Last 30 Days</option>
+        </select>
+      </div>
+      <div class="col-md-4 col-sm-12 d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary me-2"><i class="fas fa-filter"></i> Apply Filters</button>
+        <a href="{% url 'coupon_checker:company_list' %}" class="btn btn-outline-secondary"><i class="fas fa-times"></i> Clear Filters</a>
+      </div>
+    </form>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} mb-3" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {% if companies %}
+    <div class="card shadow-sm">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover table-bordered mb-0">
+            <thead class="table-dark text-center">
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Created At</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for company in companies %}
+                <tr>
+                  <td class="text-center">{{ company.name }}</td>
+                  <td class="text-center">{{ company.created_at|date:"Y-m-d H:i" }}</td>
+                  <td class="text-center">
+                    <a href="{% url 'coupon_checker:company_update' company.id %}" class="btn btn-warning btn-sm">
+                      <i class="fas fa-edit"></i> Edit
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+      <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if date_filter %}&date_filter={{ date_filter }}{% endif %}">« Previous</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">« Previous</span></li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if date_filter %}&date_filter={{ date_filter }}{% endif %}">{{ num }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if date_filter %}&date_filter={{ date_filter }}{% endif %}">Next »</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Next »</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="text-muted text-center py-5">
+      <i class="fas fa-building fa-3x mb-3"></i>
+      <h5>No companies available</h5>
+      <p>Click on "Add Company" to create your first company.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock content %}

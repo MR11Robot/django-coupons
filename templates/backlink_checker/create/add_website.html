@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Add Website - Guest Post Link Checker
+{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a class="text-light" href="{% url 'home' %}">Home</a></li>
+<li class="breadcrumb-item"><a class="text-light" href="{% url 'backlink_checker:control' %}">Guest Post Link Checker</a></li>
+<li class="breadcrumb-item active" aria-current="page">Add Website</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">Add New Website</h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} mb-3" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post" id="addWebsiteForm" novlidate>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ form_data.name|default:'' }}">
+                </div>
+                <div class="mb-3">
+                    <label for="domain" class="form-label">Domain</label>
+                    <input type="text" class="form-control" id="domain" name="domain" value="{{ form_data.domain|default:'' }}" placeholder="e.g., example.com">
+                </div>
+                <div class="mb-3">
+                    <label for="spreadsheet_id" class="form-label">Spreadsheet ID</label>
+                    <input type="text" class="form-control" id="spreadsheet_id" name="spreadsheet_id" value="{{ form_data.spreadsheet_id|default:'' }}">
+                </div>
+                <div class="mb-3">
+                    <label for="row_range" class="form-label">Row Range (e.g., A1:B10)</label>
+                    <input type="text" class="form-control" id="row_range" name="row_range" value="{{ form_data.row_range|default:'' }}">
+                </div>
+                <div class="mb-3">
+                    <label for="app_link" class="form-label">App Link (Optional)</label>
+                    <input type="text" class="form-control" id="app_link" name="app_link" value="{{ form_data.app_link|default:'' }}" placeholder="e.g., https://example.com/app">
+                </div>
+                <div class="mb-3">
+                    <label for="link_location" class="form-label">Link Location</label>
+                    <input type="number" class="form-control" id="link_location" name="link_location" value="{{ form_data.link_location|default:'0' }}">
+                </div>
+                
+                <!-- Aliases Dynamic Fields -->
+                <div class="mb-3">
+                    <label class="form-label">Aliases</label>
+                    <div id="aliases-container">
+                        {% for alias in form_data.aliases %}
+                        <div class="input-group mb-2 alias-field">
+                            <input type="text" class="form-control" name="aliases[]" value="{{ alias }}">
+                            <button type="button" class="btn btn-danger remove-alias">Remove</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="btn btn-secondary mt-2" id="add-alias">Add Alias</button>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Website</button>
+                <a href="{% url 'backlink_checker:control' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('add-alias').addEventListener('click', function() {
+    const container = document.getElementById('aliases-container');
+    const newField = document.createElement('div');
+    newField.className = 'input-group mb-2 alias-field';
+    newField.innerHTML = `
+        <input type="text" class="form-control" name="aliases[]">
+        <button type="button" class="btn btn-danger remove-alias">Remove</button>
+    `;
+    container.appendChild(newField);
+    attachRemoveListeners();
+});
+
+function attachRemoveListeners() {
+    document.querySelectorAll('.remove-alias').forEach(button => {
+        button.addEventListener('click', function() {
+            this.parentElement.remove();
+        });
+    });
+}
+
+attachRemoveListeners();
+</script>
+{% endblock content %}

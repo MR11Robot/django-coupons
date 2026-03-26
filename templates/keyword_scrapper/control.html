@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Control Manager - Smart Couponer
+{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a class="text-light" href="{% url "home" %}">Home</a></li>
+<li class="breadcrumb-item"><a class="text-light" href="{% url 'keyword_scrapper:keyword_scrapper_control' %}">Keyword Scrapper</a></li>
+<li class="breadcrumb-item active" aria-current="page">Control Manager</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">Control Manager</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Bot Control</h5>
+
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <p class="fw-bold {% if status.status == 'running' %}text-success{% elif status.status == 'stopped' %}text-danger{% else %}text-warning{% endif %}">
+                    {{ status.status|capfirst }}
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Started At</label>
+                <input type="text" class="form-control" value="{{ status.started_at|default:'N/A' }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Current Keyword</label>
+                <input type="text" class="form-control" value="{{ status.current_keyword|default:'N/A' }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Current Country</label>
+                <input type="text" class="form-control" value="{{ status.current_country|default:'N/A' }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Progress</label>
+                <input type="text" class="form-control" value="{{ status.current_country_progress|default:'N/A' }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Finished At</label>
+                <input type="text" class="form-control" value="{{ status.finished_at|default:'N/A' }}" readonly>
+            </div>
+
+            {% if status.message %}
+            <div class="alert {% if 'Failed' in status.message or 'error' in status.message|lower %}alert-danger{% else %}alert-info{% endif %} mb-3" role="alert">
+                {{ status.message }}
+            </div>
+            {% endif %}
+
+            <form method="post" class="mb-3" id="bot-control-form">
+                {% csrf_token %}
+                <button type="submit" name="start" class="btn btn-success me-2" 
+                        {% if status.status == 'running' %}disabled{% endif %}
+                        onclick="return confirm('Are you sure you want to start the bot?');">
+                    Start Bot
+                </button>
+                <button type="submit" name="stop" class="btn btn-danger me-2" 
+                        {% if status.status == 'stopped' %}disabled{% endif %}
+                        onclick="return confirm('Are you sure you want to stop the bot?');">
+                    Stop Bot
+                </button>
+            </form>
+            <a href="{% url 'keyword_scrapper:keyword_scrapper_control' %}?download=true" class="btn btn-primary">Download Report</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

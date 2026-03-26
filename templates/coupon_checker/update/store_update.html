@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Edit Store{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-light">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:coupon_checker' %}" class="text-light">Coupon Checker</a></li>
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:websites' %}" class="text-light">Websites</a></li>
+<li class="breadcrumb-item"><a href="#" class="text-light">{{ store.website.name }}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:website_stores' store.website.slug %}" class="text-light">Stores</a></li>
+<li class="breadcrumb-item"><a href="#" class="text-light">{{ store.name }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">Edit Store</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Store</h2>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="{{ form.name.id_for_label }}" class="form-label">Store Name <span class="text-danger">*</span></label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div class="text-danger">{{ form.name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Website</label>
+            {{ form.website.as_hidden }}
+            <input type="text" class="form-control" value="{{ store.website }}" disabled>
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.url.id_for_label }}" class="form-label">Store URL <span class="text-danger">*</span></label>
+            {{ form.url }}
+            {% if form.url.errors %}
+                <div class="text-danger">{{ form.url.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.check_status.id_for_label }}" class="form-label">Check Status</label>
+            {{ form.check_status }}
+        </div>
+
+        <!-- الأزرار جنب بعض -->
+        <div class="d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+
+            <!-- زرار Delete بدون form -->
+            <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+        </div>
+    </form>
+
+    <!-- الفورم الخاصة بالحذف -->
+    <form id="deleteForm" method="post" action="{% url 'coupon_checker:store_delete' store.website.slug store.slug %}">
+        {% csrf_token %}
+    </form>
+</div>
+
+<script>
+function confirmDelete() {
+    if (confirm('Are you sure you want to delete this store?')) {
+        document.getElementById('deleteForm').submit();
+    }
+}
+</script>
+
+{% endblock %}

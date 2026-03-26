@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Coupon Checker{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-light">Home</a></li>
+<li class="breadcrumb-item active" aria-current="page">Coupon Checker</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="container-fluid px-4">
+  <h1 class="mt-4 text-center fw-bold display-5">Coupon Checker</h1>
+
+  <div class="row g-4 mt-3 d-flex justify-content-center">
+    
+    <div class="col-md-5">
+      <div class="card h-100 shadow d-flex flex-column bg-dark text-light">
+        <div class="card-body flex-grow-1 text-center">
+          <h5 class="card-title fw-bold">Websites</h5>
+          <p class="card-text">
+            <strong>Number of Websites:</strong> {{ websites.count }}
+          </p>
+        </div>
+        <div class="card-footer border-0">
+          <a href="{% url 'coupon_checker:websites' %}" class="btn btn-success w-100">Visit Websites</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <div class="card h-100 shadow d-flex flex-column bg-dark text-light">
+        <div class="card-body flex-grow-1 text-center">
+          <h5 class="card-title fw-bold">Coupon Reports</h5>
+          <p class="card-text">
+            View detailed reports of all coupons and their performance.
+          </p>
+        </div>
+        <div class="card-footer border-0">
+          <a href={% url "coupon_checker:coupon_reports" %} class="btn btn-success w-100">View Reports</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- إضافة قسم الـ Countries -->
+    <div class="col-md-5">
+      <div class="card h-100 shadow d-flex flex-column bg-dark text-light">
+        <div class="card-body flex-grow-1 text-center">
+          <h5 class="card-title fw-bold">Countries</h5>
+          <p class="card-text">
+            <strong>Number of Countries:</strong> {{ countries.count }}
+          </p>
+        </div>
+        <div class="card-footer border-0">
+          <a href={% url "coupon_checker:country_list" %} class="btn btn-success w-100">Visit Countries</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- إضافة قسم الـ Companies -->
+    <div class="col-md-5">
+      <div class="card h-100 shadow d-flex flex-column bg-dark text-light">
+        <div class="card-body flex-grow-1 text-center">
+          <h5 class="card-title fw-bold">Companies</h5>
+          <p class="card-text">
+            <strong>Number of Companies:</strong> {{ companies.count }}
+          </p>
+        </div>
+        <div class="card-footer border-0">
+          <a href={% url "coupon_checker:company_list" %} class="btn btn-success w-100">Visit Companies</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock content %}

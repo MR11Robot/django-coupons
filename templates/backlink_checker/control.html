@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Guest Post Link Checker - Control Manager
+{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a class="text-light" href="{% url "home" %}">Home</a></li>
+<li class="breadcrumb-item"><a class="text-light" href="{% url 'backlink_checker:control' %}">Guest Post Link Checker</a></li>
+<li class="breadcrumb-item active" aria-current="page">Control Manager</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">Guest Post Link Checker Control</h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} mb-3" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Bot Control</h5>
+
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <p class="fw-bold {% if status.status == 'running' %}text-success{% elif status.status == 'stopped' %}text-danger{% else %}text-warning{% endif %}">
+                    {{ status.status|capfirst }}
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Started At</label>
+                <input type="text" class="form-control" value="{{ status.started_at|default:'N/A' }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Current Website</label>
+                <input type="text" class="form-control" value="{{ status.current_website_name|default:'N/A' }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Website Number</label>
+                <input type="text" class="form-control" value="{{ status.current_website_number|default:'0' }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Total Links for Website</label>
+                <input type="text" class="form-control" value="{{ status.total_articles_in_website|default:'0' }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Current Link Number</label>
+                <input type="text" class="form-control" value="{{ status.current_link_number|default:'0' }}" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Finished At</label>
+                <input type="text" class="form-control" value="{{ status.finished_at|default:'N/A' }}" readonly>
+            </div>
+
+            {% if status.message %}
+            <div class="alert {% if 'Failed' in status.message or 'error' in status.message|lower %}alert-danger{% else %}alert-info{% endif %} mb-3" role="alert">
+                {{ status.message }}
+            </div>
+            {% endif %}
+
+            <form method="post" class="mb-3" id="bot-control-form">
+                {% csrf_token %}
+                <button type="submit" name="start" class="btn btn-success me-2" 
+                        {% if status.status == 'running' %}disabled{% endif %}
+                        onclick="return confirm('Are you sure you want to start the bot?');">
+                    Start Bot
+                </button>
+                <button type="submit" name="stop" class="btn btn-danger me-2" 
+                        {% if status.status == 'stopped' %}disabled{% endif %}
+                        onclick="return confirm('Are you sure you want to stop the bot?');">
+                    Stop Bot
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-4 mb-4">
+        <a href="{% url 'backlink_checker:add_website' %}" class="btn btn-primary">Add New Website</a>
+    </div>
+    <!-- Websites List -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Websites Reports</h5>
+            {% if websites %}
+            <ul class="list-group">
+                {% for website in websites %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ website.name }}</span>
+                    <div>
+                        <a href="{% url 'backlink_checker:control' %}?download=true&filename={{ website.name|lower|slugify }}" 
+                           class="btn btn-sm btn-primary me-2">
+                            Download Report
+                        </a>
+                        <a href="{% url 'backlink_checker:edit_website' website.name %}" 
+                           class="btn btn-sm btn-warning">
+                            Edit
+                        </a>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">No websites available.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

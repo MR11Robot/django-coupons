@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Websites{% endblock title %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-light">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'coupon_checker:coupon_checker' %}" class="text-light">Coupon Checker</a></li>
+<li class="breadcrumb-item active" aria-current="page">Websites</li>
+{% endblock breadcrumb %}
+{% block content %}
+<div class="container-fluid px-4">
+  <!-- Messages Section -->
+  {% if messages %}
+  <div class="container-fluid px-4">
+      {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      {% endfor %}
+  </div>
+  {% endif %}
+  
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold display-5 m-0">Websites</h1>
+    <a href="{% url 'coupon_checker:website_create' %}" class="btn btn-primary">Add Website</a>
+  </div>
+
+  {% if websites %}
+    <div class="row g-4 mb-4">
+      {% for website in websites %}
+        <div class="col-md-4">
+          <div class="card h-100 shadow border-0">
+            <div class="card-body bg-dark text-light">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="card-title fw-bold mb-0">{{ website.name }}</h5>
+              </div>
+              <p class="card-text">
+                <strong>Number of Stores:</strong> {{ website.store_count }}<br>
+                <strong>Created At:</strong> {{ website.created_at|date:"Y-m-d h:i A" }}<br>
+                <strong>Last Updated:</strong> {{ website.updated_at|date:"Y-m-d h:i A" }}
+              </p>
+              <div class="d-flex justify-content-between">
+                <a href="{% url 'coupon_checker:website_stores' website.slug %}" class="btn btn-success">Visit Stores</a>
+                <a href="{% url 'coupon_checker:website_edit' website.slug %}" class="btn btn-warning text-dark edit-btn">Edit</a>
+              </div>
+            
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="alert alert-info mt-4" role="alert">
+      No websites available.
+    </div>
+  {% endif %}
+
+  <!-- Pagination Section -->
+  <nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1">First</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        </li>
+      {% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+          <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+
+
+{% endblock content %}
